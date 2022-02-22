@@ -1,0 +1,34 @@
+CREATE TABLE `article` (
+  `id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `descr` varchar(255) DEFAULT NULL,
+  `enebaURL` varchar(255) DEFAULT NULL,
+  `igURL` varchar(255) DEFAULT NULL
+);
+
+ALTER TABLE `article`
+  ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `article`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+COMMIT;
+
+
+
+CREATE TABLE `website` (
+  `id` int(11) NOT NULL,
+  `idArticle` int(11) NOT NULL,
+  `price` varchar(255) NOT NULL,
+  `priceDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+ALTER TABLE `website`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `articleID` (`idArticle`);
+
+ALTER TABLE `website`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `website`
+  ADD CONSTRAINT `articleID` FOREIGN KEY (`idArticle`) REFERENCES `article` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+COMMIT;
