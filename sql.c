@@ -2,33 +2,6 @@
 #include <stdlib.h> 
 #include <mysql/mysql.h>
 #include <string.h>
-// #include "main.c"
-
-
-// int selectSQL(char *request, MYSQL *conn, MYSQL_RES *res ){
-
-// 	MYSQL_ROW row;
-// 	printf("Request: %s\n",request);
-// 	printf("Sending SQL Request...\n");
-
-// 	if (mysql_query(conn, request)) {
-// 		fprintf(stderr, "%s\n", mysql_error(conn));
-// 		return EXIT_FAILURE;
-// 	}
-
-
-// 	res = mysql_use_result(conn);
-
-// 	printf("result: \n");
-// 	while((row = mysql_fetch_row(res)) != NULL)
-// 	printf("%s \n", row[0]);
-
-// 	printf("SQL Request reponse succes !\n\n");
-
-// 	return EXIT_SUCCESS;
-// }
-
-
 
 struct articleStruct{
 	char title[255];
@@ -44,6 +17,7 @@ struct priceStruct{
 };
 
 int insertPrice(struct priceStruct sitePrice, MYSQL *conn){
+
 	MYSQL_RES *res;
 
 	char request[4096] = "INSERT INTO website(idArticle, price, site) VALUES (";
@@ -114,80 +88,34 @@ int newArticle(struct articleStruct article, MYSQL *conn){
 	scanf("%s",article.igURL);
 
 	insertArticle(article, conn);
+
+	return EXIT_SUCCESS;
 }
 
 
+int showHistory(char *idArticle, MYSQL *conn){
 
+	MYSQL_RES *res;
+	MYSQL_ROW row;
 
-// int main(int argc, char **argv) {
+	char request[512] = "SELECT price, priceDate, site FROM website  WHERE idArticle = "; 
+	strcat(request, idArticle);
+	strcat(request, " ORDER BY priceDate DESC;");
 
-//   MYSQL *conn;
-//   MYSQL_RES *res;
-//   MYSQL_ROW row;
+	if (mysql_query(conn, request)) {
+		fprintf(stderr, "%s\n", mysql_error(conn));
+		return EXIT_FAILURE;
+	}
+    
+    res = mysql_use_result(conn);
 
-//   char *server = "localhost";
-//   char *user = "root";
-//   char *password = "root";
-//   char *database = "PCC";
+	printf("\n\n\n");
+    printf(" Prix  | Date     | Site\n");
 
-//   conn = mysql_init(NULL);
+    while((row = mysql_fetch_row(res)) != NULL)
+        printf("%s€ | %s   | %s    \n", row[0],row[1],row[2]);
 
-//   printf("starting...\n");   
+    mysql_free_result(res);
 
-//   /* Connect to database */
-//   if (!mysql_real_connect(conn, server, user, password, database, 0, NULL, 0)) {
-//     printf("error: %s\n", mysql_error(conn));
-//     return EXIT_FAILURE;
-//   } else {
-//     printf("Connection success !\n");
-//   }
-
-//   // printf("1\n");
-
-//   // if(mysql_query(conn, "SHOW TABLES;")) {
-//   //   printf("error: %s\n", mysql_error(conn));
-//   //   return EXIT_FAILURE;
-//   // } else {
-//   //   printf("Request success !\n");
-//   // }
-
-//   // printf("2\n");
-
-  
-
-
-
-
- 
-
-//   struct articleStruct article;
-
-
-//   strcpy(article.title, "'titre'");
-//   strcpy(article.descr, "'description'");
-//   strcpy(article.enebaURL, "'url eneba'");
-//   strcpy(article.igURL, "'url IG'");
-
-//   // char request;
-//   insertArticle(article, conn);
-  
-//   // row = mysql_fetch_row(res);
-//   // printf("%s",row[0]);
-  
-//   printf("=============\n");
-//   /* output table name */
-
-//   selectSQL("SHOW TABLES;", conn, res);
-
-//   printf("MySQL Tables in mysql database:\n");
-//   // res = mysql_use_result(conn);
-
-//   while((row = mysql_fetch_row(res)) != NULL)
-//     printf("%s \n", row[0]);
-
-
-//   /* close connection */
-//   mysql_free_result(res);
-//   mysql_close(conn);
-//   return EXIT_SUCCESS;
-// }
+	return EXIT_SUCCESS;
+}

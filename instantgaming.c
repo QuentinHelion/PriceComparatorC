@@ -1,14 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "sql.c"
+// #include "sql.c"
 
 #define MAX_LINE_LENGTH 4096
 
-int searchEnebaPrice(char *path){
+int searchIGPrice(char *path){
 
     char line[MAX_LINE_LENGTH] = {0};
-    char search[11] = "\"lowPrice\"";
+    char search[10] = "\"price\":\"";
     int i,y,x,count,price;
 
     FILE *file = fopen(path, "r");
@@ -30,12 +30,12 @@ int searchEnebaPrice(char *path){
                                     x = sizeof(search);
                                 }
                             }
-                            if(count == 9){
-                                int start = y + sizeof(search);
+                            if(count == 8){
+                                int start = y + sizeof(search) - 1;
                                 // printf("%c %c %c\n", line[start], line[start+1], line[start+2]);
-                                if(line[start+2] == 44 || line[start+2] == 46){
+                                if(line[start+2] == ',' || line[start+2] == '.'){
                                     price = ((line[start]-48)*10) + (line[start+1]-48);
-                                } else if(line[start+1] == 44 || line[start+1] == 46){
+                                } else if(line[start+1] == ',' || line[start+1] == '.'){
                                     price = line[start]-48;
                                 } else{
                                     price = ((line[start]-48)*100) + ((line[start+1]-48)*10) + (line[start+2]-48);
