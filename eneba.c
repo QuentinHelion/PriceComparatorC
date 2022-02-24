@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "sql.c"
 
 #define MAX_LINE_LENGTH 4096
 
-
 int searchPrice(char *path){
+
     char line[MAX_LINE_LENGTH] = {0};
     char search[11] = "\"lowPrice\"";
     int i,y,x,count,price;
@@ -49,27 +50,10 @@ int searchPrice(char *path){
     }
 
     if (fclose(file)){
-        return -1;
-    }
+        return EXIT_SUCCESS;
+    };
 
+    
 
     return price;
 }
-
-
-
-
-// int main(int argc, char **argv){
-
-//     // char path[255] = "test.txt";
-    
-//     // unsigned int line_count = 0;
-    
-//     int price;
-    
-//     price = searchPrice("test2.txt");
-
-//     printf("Prix d'Eneba: %d\n",price);    
-
-//     return EXIT_SUCCESS;
-// }
