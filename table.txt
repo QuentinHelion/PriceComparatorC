@@ -19,7 +19,8 @@ CREATE TABLE `website` (
   `id` int(11) NOT NULL,
   `idArticle` int(11) NOT NULL,
   `price` varchar(255) NOT NULL,
-  `priceDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `priceDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `site` VARCHAR(255) NOT NULL
 );
 
 ALTER TABLE `website`
