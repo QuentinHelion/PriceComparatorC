@@ -5,7 +5,9 @@
 
 #define MAX_LINE_LENGTH 4096
 
-int searchIGPrice(char *path){
+int searchIGPrice(){
+
+    char *path = "instantgaming.txt";
 
     char line[MAX_LINE_LENGTH] = {0};
     char search[10] = "\"price\":\"";

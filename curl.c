@@ -1,11 +1,14 @@
-int curl(char *url, char *plateforme){  
-	char cmd[1028] = "curl -o ";
+// int curl(char *url, char *plateforme){  
+// 	char cmd[2096] = "curl -o ";
 
-	strcat(cmd, plateforme);
-	strcat(cmd, ".txt ");
-	strcat(cmd, url);
+// 	strcat(cmd, plateforme);
+// 	strcat(cmd, ".txt \"");
+// 	strcat(cmd, url);
+// 	strcat(cmd, "\"");
 
-	system(cmd);
+// 	printf("%s\n",cmd);
 
-	return EXIT_SUCCESS;
-}
+// 	system(cmd);
+
+// 	return 0;
+// }

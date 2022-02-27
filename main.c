@@ -6,15 +6,35 @@
 #include "instantgaming.c"
 #include "eneba.c"
 
+#define SERVER "localhost"
+#define USER "root"
+#define PASSWORD "root"
+#define DB "PCC"
+
+
 // ====== PROTOTYPES =======
 int refreshAllPrice(MYSQL *conn);
-int getEnebaPrice(int idArticle, char *url, MYSQL *conn);
-int getIGPrice(int idArticle, char *url, MYSQL *conn);
+// int getEnebaPrice(int idArticle, char *url, MYSQL *conn);
+// int getIGPrice(int idArticle, char *url, MYSQL *conn);
+int curl(char *url, char *plateforme);
 
 
-int getEnebaPrice(int idArticle, char *url, MYSQL *conn){
+int getEnebaPrice(int idArticle, char *url){
 
-    curl(url, "eneba");
+        // ======= PARTIE SQL =======
+    MYSQL *conn;
+    conn = mysql_init(NULL);
+
+    printf("starting...\n");   
+
+    if (!mysql_real_connect(conn, SERVER, USER, PASSWORD, DB, 0, NULL, 0)) {
+        printf("error: %s\n", mysql_error(conn));
+        return EXIT_FAILURE;
+    }
+
+    printf("url: %s\n", url);
+
+    // curl(url, "eneba");
 
     struct priceStruct priceEneba;
 
@@ -27,19 +47,42 @@ int getEnebaPrice(int idArticle, char *url, MYSQL *conn){
     return EXIT_SUCCESS;
 }
 
-int getIGPrice(int idArticle, char *url, MYSQL *conn){
+int getIGPrice(int idArticle, char *url){
 
-    curl(url, "instant-gaming");
+    // curl(url, "instant-gaming");
+
+    MYSQL *conn;
+    conn = mysql_init(NULL);
+    if (!mysql_real_connect(conn, SERVER, USER, PASSWORD, DB, 0, NULL, 0)) {
+        printf("error: %s\n", mysql_error(conn));
+        return EXIT_FAILURE;
+    }
 
     struct priceStruct priceIG;
 
     priceIG.idArticle = idArticle;
-    priceIG.price = searchIGPrice("instant-gaming.txt");
+    priceIG.price = searchIGPrice();
+    printf("IGGGG: %d\n",searchIGPrice());
     strcpy(priceIG.site, "instant-gaming.com");    
 
     insertPrice(priceIG, conn);
 
     return EXIT_SUCCESS;
+}
+
+int curl(char *url, char *plateforme){  
+	char cmd[2096] = "curl -o ";
+
+	strcat(cmd, plateforme);
+	strcat(cmd, ".txt \"");
+	strcat(cmd, url);
+	strcat(cmd, "\"");
+
+	printf("%s\n",cmd);
+
+	system(cmd);
+
+	return 0;
 }
 
 
@@ -58,32 +101,57 @@ int refreshAllPrice(MYSQL *conn){
 	printf("result: \n");
 	while((row = mysql_fetch_row(res)) != NULL){
         int idAricle = atoi(row[0]);
+        char enebaURL[255];
+        char igURL[255];
+        strcpy(enebaURL,row[1]);
+        strcpy(igURL, row[2]);
 		printf("id: %d \n", idAricle);
-		printf("enebaURL: %s \n", row[1]);
-		printf("igURL: %s \n", row[2]);
+		printf("enebaURL: %s \n", enebaURL);
+		printf("igURL: %s \n", igURL);
 
-		if(row[1][0] != 'N' && row[1][1] != 'C'){
-			printf("curl");
-			printf("liens: %s\n",row[1]);
-            mysql_free_result(res);
-			getEnebaPrice(idAricle, row[1], conn);
+        // mysql_free_result(res);
+
+		if(enebaURL[0] != 'N' && enebaURL[1] != 'C'){
+			printf("curl\n");
+            // char *url;
+            // strcat(url, row[1]);
+			printf("liens: %s\n", enebaURL );
+
+            char cmd[2096] = "curl -o ";
+            strcat(cmd, "eneba.txt ");
+            strcat(cmd, enebaURL);
+            printf("%s\n",cmd);
+
+            system(cmd);
+
+            
+            // curl(url, "eneba");
+
+			getEnebaPrice(idAricle, enebaURL);
 		} else {
 			printf("non");
 		}
 
-        if(row[2][0] != 'N' && row[2][1] != 'C'){
-			printf("curl");
-			printf("liens: %s\n",row[2]);
-            if(row[1][0] == 'N' && row[1][1] == 'C'){
-                mysql_free_result(res);
-            }
-			getIGPrice(idAricle, row[2], conn);
+        if(igURL[0] != 'N' && igURL[1] != 'C'){
+			printf("curl\n");
+			printf("liens: %s\n",igURL);
+
+            char cmd[2096] = "curl -o ";
+            strcat(cmd, "instantgaming.txt ");
+            strcat(cmd, igURL);
+            printf("%s\n",cmd);
+            system(cmd);
+
+            // mysql_free_result(res);
+			getIGPrice(idAricle, igURL);
 		} else {
 			printf("non");
 		}
 
 		printf("\n=========\n");
 	}
+
+    mysql_free_result(res);
 
 	return EXIT_SUCCESS;
 }
@@ -129,16 +197,11 @@ int main(int argc, char **argv){
     MYSQL_RES *res;
     MYSQL_ROW row;
 
-    char *server = "localhost";
-    char *user = "root";
-    char *password = "root";
-    char *database = "PCC";
-
     conn = mysql_init(NULL);
 
     printf("starting...\n");   
 
-    if (!mysql_real_connect(conn, server, user, password, database, 0, NULL, 0)) {
+    if (!mysql_real_connect(conn, SERVER, USER, PASSWORD, DB, 0, NULL, 0)) {
         printf("error: %s\n", mysql_error(conn));
         return EXIT_FAILURE;
     }
@@ -175,7 +238,8 @@ int main(int argc, char **argv){
                 refreshAllPrice(conn);
                 break;
             case 4: 
-                
+                // curl("https://www.eneba.com/fr/steam-subnautica-steam-key-global", "eneba");
+                searchIGPrice();
                 break;
 
 
