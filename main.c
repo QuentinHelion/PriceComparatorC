@@ -2,14 +2,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include "curl.c"
 #include "instantgaming.c"
 #include "eneba.c"
 
-#define SERVER "localhost"
-#define USER "root"
+#define SERVER   "localhost"
+#define USER     "root"
 #define PASSWORD "root"
-#define DB "PCC"
+#define DB       "PCC"
 
 
 // ====== PROTOTYPES =======
@@ -186,70 +185,70 @@ int selectHistory(MYSQL *conn){
 
 
 
-int main(int argc, char **argv){
-    // curl("https://www.eneba.com/fr/steam-subnautica-steam-key-global", "eneba");
-    short choice;
-    short programLoop = 1;
+// int main(int argc, char **argv){
+//     // curl("https://www.eneba.com/fr/steam-subnautica-steam-key-global", "eneba");
+//     short choice;
+//     short programLoop = 1;
 
 
-    // ======= PARTIE SQL =======
-    MYSQL *conn;
-    MYSQL_RES *res;
-    MYSQL_ROW row;
+//     // ======= PARTIE SQL =======
+//     MYSQL *conn;
+//     MYSQL_RES *res;
+//     MYSQL_ROW row;
 
-    conn = mysql_init(NULL);
+//     conn = mysql_init(NULL);
 
-    printf("starting...\n");   
+//     printf("starting...\n");   
 
-    if (!mysql_real_connect(conn, SERVER, USER, PASSWORD, DB, 0, NULL, 0)) {
-        printf("error: %s\n", mysql_error(conn));
-        return EXIT_FAILURE;
-    }
+//     if (!mysql_real_connect(conn, SERVER, USER, PASSWORD, DB, 0, NULL, 0)) {
+//         printf("error: %s\n", mysql_error(conn));
+//         return EXIT_FAILURE;
+//     }
 
-    struct articleStruct article;
-    struct priceStruct sitePrice;
+//     struct articleStruct article;
+//     struct priceStruct sitePrice;
 
-    while(programLoop){
-        choice = 0;
+//     while(programLoop){
+//         choice = 0;
 
-        printf("\n========oOo========\n");
-        printf("1: Ajouter un nouvel article\n");
-        printf("2: Voir l'historique d'un article\n");
-        printf("3: Actualiser le prix des articles\n");
-        printf("4: Test\n");
-        printf("0: Quitter\n");
-        printf("Que voulez-vous faire ?\n");
+//         printf("\n========oOo========\n");
+//         printf("1: Ajouter un nouvel article\n");
+//         printf("2: Voir l'historique d'un article\n");
+//         printf("3: Actualiser le prix des articles\n");
+//         printf("4: Test\n");
+//         printf("0: Quitter\n");
+//         printf("Que voulez-vous faire ?\n");
 
-        scanf("%hd",&choice);
+//         scanf("%hd",&choice);
 
 
-        switch (choice){
-            case 0: 
-                programLoop = 0;
-                break;
-            case 1: 
-                newArticle(article,conn);
-                break;
+//         switch (choice){
+//             case 0: 
+//                 programLoop = 0;
+//                 break;
+//             case 1: 
+//                 newArticle(article,conn);
+//                 break;
             
-            case 2:
-                selectHistory(conn);
-                break;
-            case 3: 
-                refreshAllPrice(conn);
-                break;
-            case 4: 
-                // curl("https://www.eneba.com/fr/steam-subnautica-steam-key-global", "eneba");
-                searchIGPrice();
-                break;
+//             case 2:
+//                 selectHistory(conn);
+//                 break;
+//             case 3: 
+//                 refreshAllPrice(conn);
+//                 break;
+//             case 4: 
+//                 // curl("https://www.eneba.com/fr/steam-subnautica-steam-key-global", "eneba");
+//                 searchIGPrice();
+//                 break;
 
 
-            default:
+//             default:
 
-                break;
-        }
-    }
+//                 break;
+//         }
+//     }
 
-    mysql_free_result(res);
-    mysql_close(conn);
-    return EXIT_SUCCESS;
-}
+//     mysql_free_result(res);
+//     mysql_close(conn);
+//     return EXIT_SUCCESS;
+// }
